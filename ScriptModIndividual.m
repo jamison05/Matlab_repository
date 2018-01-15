@@ -14,7 +14,8 @@ classdef ScriptModIndividual
         program_of_patterns
         set_stroke_opacity
         set_gitter_opacity
-        set_image_textures 
+        set_image_textures
+        scriptCellArray % This is the combination of both stroke and brush
         scriptCellArray_brush
         scriptCellArray_strokes
         %These are the main properties I would to affect
@@ -30,7 +31,7 @@ classdef ScriptModIndividual
     end
     
     methods
-        function construct_brush = ScriptModIndividual(script_num)
+        function construct_brush = ScriptModIndividual(script_num, chng_val)
             
             if nargin > 0
                
@@ -74,108 +75,127 @@ classdef ScriptModIndividual
                     updatedString = regexprep(current_str, '-----', '      ');
                     calculated_brush(i)= cell({updatedString}); 
                 end
+                    %Important closing is always important.
+                    calculated_brush(i_touch_array_x.length.length+1)=cell('stroke_end');
                     construct_brush.scriptCellArray_strokes = calculated_brush;
                     current_script = getScript(script_num);
-                    result = cat(1,current_script,calculated_brush);
-                    construct_brush.scriptCellArray = result;
-                
-            end  
+                    construct_brush.scriptCellArray_brush = current_script;
+                    
+               if (chng_val==0)
+                     result = cat(1,current_script,calculated_brush);
+                     construct_brush.scriptCellArray = result;
+            
+              
+               end
+           end  
            
+            
             end
            
            
         end
         
-        function transfer_values1 = get.changeValue(obj)
-            transfer_values1.changeValue =1;
-        end   
+        %the changeValue will ge called outside and then the objects 
+        %will go ino 
+           
         %pnt x  434.00 y  244.00 time 124282 prs 1.00 tlt 0.00 brg 0.00 whl 1.00 rot 0.00
         %First one the Fuzzy logic inference to get values.  
         %3, 6, 7, 8, 10, 12,13,15, 19, 20, 23, 27,29
-            function obj = set.changeValue(obj,status)
+            %This activates all of the changes that will affect
+                     %the brush based pn the brush selection sent to the
+                     %constructor.
+                     
+                     %Operations will be performed on the calling function 
+                     %In future iterations of modifying the code I will set
+                     %will make setter functions to calculate the values
+                     %especially as it gets more intricate. 
+                 
+        function obj = set.changeValue(obj,status)
                 obj.changeValue=status;
                 switch status
                     case 0
                      %no action te value does not change
-                    case 1
+                    case 3
                      %Item 3
                      obj.indexEffects = getbrushPropertyLocations(3);
                      %Replaces the value with another value
                      obj.set_stroke_opacity =1;  
-                    case 2
+                    case 6
                      obj.indexEffects = getbrushPropertyLocations(6);
                      %Replaces the value with another value
                      obj.set_gitter_opacity =1;  
-                    case 3
+                    case 7
                      obj.indexEffects = getbrushPropertyLocations(7);
                      %Replaces the value with another value
                      obj.set_gitter_opacity =1; 
-                    case 4
+                    case 8
                      obj.indexEffects = getbrushPropertyLocations(8);
                      %Replaces the value with another value
                      obj.set_gitter_opacity =1; 
-                    case 5    
+                    case 10    
                      obj.indexEffects = getbrushPropertyLocations(10);
                      %Replaces the value with another value
                      obj.set_gitter_opacity =1; 
-                    case 6    
+                    case 12    
                      obj.indexEffects = getbrushPropertyLocations(12);
                      %Replaces the value with another value
                      obj.set_gitter_opacity =1; 
-                    case 7    
+                    case 13    
                      obj.indexEffects = getbrushPropertyLocations(13);
                      %Replaces the value with another value
                      obj.set_gitter_opacity =1;
-                    case 8    
+                    case 15    
                      obj.indexEffects = getbrushPropertyLocations(15);
                      %Replaces the value with another value
                      obj.set_gitter_opacity =1;
-                    case 9    
+                    case 19    
                      obj.indexEffects = getbrushPropertyLocations(19);
                      %Replaces the value with another value
                      obj.set_gitter_opacity =1;
-                    case 10    
+                    case 20    
                      obj.indexEffects = getbrushPropertyLocations(20);
                      %Replaces the value with another value
                      obj.set_gitter_opacity =1; 
-                    case 11    
+                    case 23    
                      obj.indexEffects = getbrushPropertyLocations(23);
                      %Replaces the value with another value
                      obj.set_gitter_opacity =1;
-                    case 12    
+                    case 27    
                      obj.indexEffects = getbrushPropertyLocations(27);
                      %Replaces the value with another value
                      obj.set_gitter_opacity =1;
-                    case 13    
+                    case 29    
                      obj.indexEffects = getbrushPropertyLocations(29);
                      %Replaces the value with another value
                      obj.set_gitter_opacity =1;  
                 end    
+                 result = cat(1,transfer_values.scriptCellArray_brush, calculated_brush);
+                 obj.scriptCellArray = result;
 
             end
         
 %         set_stroke_opacity
 %         set_gitter_opacity
 %         set_image_textures 
-            function obj = set.set_stroke_opacity(obj,init)
-               obj.set_stroke_opacity=init;
-               value1 = strcat('stroke_opacity', '-----',num2str(obj.opacity));
+        function obj = set.set_stroke_opacity(obj,init)
+                 obj.set_stroke_opacity=init;
+                 value1 = strcat('stroke_opacity', '-----',num2str(obj.opacity));
                  %This value will be modified within the object as it
                  %progresses.  
                  updatedString = regexprep(value1, '-----', '    ');
-                 obj.scriptCellArray(obj.indexEffects(1)) = num2str(updatedString);      
-                 
+                 obj.scriptCellArray_brush(obj.indexEffects(1)) = num2str(updatedString);      
+
                  value1 = strcat('max_size_slider', '-----',num2str(obj.brush_max));
                  %This value will be modified within the object as it
                  %progresses.  
                  updatedString = regexprep(value1, '-----', '    ');
-                 obj.scriptCellArray(obj.indexEffects(2)) = num2str(updatedString);  
-                 
+                 obj.scriptCellArray_brush(obj.indexEffects(2)) = num2str(updatedString);  
+
                  value1 = strcat('min_radius_fraction_slider', '-----',num2str(obj.brush_min));
                  %This value will be modified within the object as it
                  %progresses.  
                  updatedString = regexprep(value1, '-----', '    ');
-                 obj.scriptCellArray(obj.indexEffects(3)) = num2str(updatedString);
+                 obj.scriptCellArray_brush(obj.indexEffects(3)) = num2str(updatedString);
             end 
             function obj = set.set_gitter_opacity(obj,init)
                obj.set_gitter_opacity=init;
@@ -184,19 +204,19 @@ classdef ScriptModIndividual
                  %This value will be modified within the object as it
                  %progresses.  
                  updatedString = regexprep(value1, '-----', '    ');
-                 obj.scriptCellArray(obj.indexEffects(1)) = num2str(updatedString);      
+                 obj.scriptCellArray_brush(obj.indexEffects(1)) = num2str(updatedString);      
                  
                  value1 = strcat('max_size_slider', '-----',num2str(obj.brush_max));
                  %This value will be modified within the object as it
                  %progresses.  
                  updatedString = regexprep(value1, '-----', '    ');
-                 obj.scriptCellArray(obj.indexEffects(2)) = num2str(updatedString);  
+                 obj.scriptCellArray_brush(obj.indexEffects(2)) = num2str(updatedString);  
                  
                  value1 = strcat('min_radius_fraction_slider', '-----',num2str(obj.brush_min));
                  %This value will be modified within the object as it
                  %progresses.  
                  updatedString = regexprep(value1, '-----', '    ');
-                 obj.scriptCellArray(obj.indexEffects(3)) = num2str(updatedString);
+                 obj.scriptCellArray_brush(obj.indexEffects(3)) = num2str(updatedString);
                
             end 
             function obj = set.set_image_textures (obj,init)
