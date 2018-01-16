@@ -12,24 +12,18 @@ classdef scriptModMultiple
         
         
         function constructScriptMult = scriptModMultiple(program) 
+            
+            %script_num, chng_val, stroke_var,user_strokevar, fuzzy_var
+            
             total_scripts= cell(100000,1);
             %This is running the code as is without tranferring any value. 
             constructScriptMult.Program = program;
-            initiateOneScript =scriptModIndividual(3,1); 
+            initiateOneScript = ScriptModIndividual(3,3,3,4,1,99,1,.7,3); 
             
             %If modifying the code for fuzzy logic, (which will be done for some parts)
-            
             %Maybe influence the values with fuzzy logic
-            initiateOneScript.opacity =.5;
-            initiateOneScript.brush_max= 99;
-            initiateOneScript.brush_min= 5;
-            initiateOneScript.changeValue= 3;  
+          
             
-            initiateOneScript =scriptModIndividual(3,1);
-            initiateOneScript.opacity =.7;
-            initiateOneScript.brush_max= 135;
-            initiateOneScript.brush_min= 5;
-            initiateOneScript.changeValue= 3; 
             
             %Before calling changeValue, initiate the 3 properties with
             %values. Unfortunately,you will have to iterate through each
@@ -44,13 +38,13 @@ classdef scriptModMultiple
             
                 result = initiateOneScript.scriptCellArray;  
                 %This is how I push elements into the array 
-                total_scripts = vertcat(total_scripts, result);
+                total_scripts =  result;
                 fileID = fopen('script_iteration1.txt','w');
                 formatSpec = '%s';
 
                 T = cell2table(total_scripts, 'VariableNames',{'var1'});
-                input_str = input(prompt,'s');
-                file_table= strcat(input_str,'_table.txt');
+                input_str = input('What is the prefered');
+                file_table= strcat(mat2str(input_str),'_table.txt');
                 writetable(T, file_table);
                 fclose(fileID);
           

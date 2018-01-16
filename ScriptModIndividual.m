@@ -9,99 +9,116 @@ classdef ScriptModIndividual
     %how each image sychronizes based on fuzzy logic ))
     
     %Personal expression will be done with neural networks. 
-        
-    properties(Dependent)
-        program_of_patterns
-        set_stroke_opacity
-        set_gitter_opacity
-        set_image_textures
-        scriptCellArray % This is the combination of both stroke and brush
-        scriptCellArray_brush
-        scriptCellArray_strokes
-        %These are the main properties I would to affect
-        opacity
+    properties
+
+        opacity;
         brush_max
         brush_min
         texture_use
-        changeValue
+        scriptCellArray_brush
+        scriptCellArray_strokes 
         indexEffects
+         scriptCellArray 
+    end
+    
+    properties(Dependent)
+        changeValue
+        program_of_patterns
+        
+        set_stroke_opacity
+        set_gitter_opacity
+        set_image_textures
+       % This is the combination of both stroke and brush
+       
+        %These are the main properties I would to affect
+     
+       
         %Scripting Program will be a structure since it is complicated
         %to orient all of the objects correctly with this. 
         scriptingProgram=1;
     end
-    
+   
     methods
-        function construct_brush = ScriptModIndividual(script_num, chng_val)
+        function construct_brush = ScriptModIndividual(script_num, chng_val,...
+            stroke_var,user_strokevar, fuzzy_var,BRUSH_max, BRUSH_min, BRUSH_opacity,...
+             BRUSH_type)
             
             if nargin > 0
                
-            %Initialize the stroke object
-            stroke_object= stroke_Program1(1);%This will be the default
-            
-            
-            [nrows,ncols] = size(current_script);
-            
-            %pnt x  434.00 y  244.00 time 124282 prs 1.00 tlt 0.00 brg 0.00 whl 1.00 rot 0.00
-            %Cat concatenates the array along the first dimension. 
-            
-            
-            if (ScriptModIndividual.scriptingProgram == 1)
                 
-                stroke_object.Program =1;
-                checklayer1 = stroke_object.layer_1_val;
-                checklayer2 = stroke_object.layer_2_val;
-                checklayer3 = stroke_object.layer_3_val;
-                calculated_X = cell(stroke_object.i_touch_array_x.length);
-                calculated_Y = cell(stroke_object.i_touch_array_y.length);
-                calculated_Press = cell(stroke_object.i_touch_array_pressure.length);
-                calculated_brush = cell(stroke_object.i_touch_array_pressure.length); 
+                
+                %Initialize the stroke objectUSE
+                stroke_object= stroke_Program1(stroke_var,script_num, chng_val, stroke_var,user_strokevar, fuzzy_var);%This will be the default
+
+
+                %[nrows,ncols] = size(current_script);
+
+                %pnt x  434.00 y  244.00 time 124282 prs 1.00 tlt 0.00 brg 0.00 whl 1.00 rot 0.00
+                %Cat concatenates the array along the first dimension. 
+            
+ 
+                
+                stroke_object.Program = 1;
+                %Stroke variation, user stroke_varation, and fuzzy stroke
+                %variation will be initiated by this code. 
+                
+                calculated_X = ones(length(stroke_object.i_touch_array_x),1);
+                calculated_Y = ones(length(stroke_object.i_touch_array_y),1);
+                calculated_Press = ones(length(stroke_object.i_touch_array_pressure),1);
+                calculated_brush = cell(length(stroke_object.i_touch_array_pressure),1); 
                 %This is only one algorithm that follows time. 
-                for i = 1:stroke_object.i_touch_array_x.length 
-                    calculated_X(i) = (stroke_object.X_1array(i)*stroke_object.option_overide_percent) ...
-                    + stroke_object.i_touch_array_x(i) *stroke_object.option_overide_percent2 ...
-                    *(strokr_object.fuzzy_y(i)/10);
-                    calculated_Y(i) = (stroke_object.Y_1array(i)*stroke_object.option_overide_percent) ...
-                    + stroke_object.i_touch_array_y(i)*stroke_object.option_overide_percent2 ...
-                    *(strokr_object.fuzzy_x(i)/10);
+                for i = 2:length(cell2mat(stroke_object.i_touch_array_x)) 
+                    calculated_X(i) = cell2mat(stroke_object.X_1array(i))*stroke_object.option_overide_percent ...
+                    + cell2mat(stroke_object.i_touch_array_x(i)) * stroke_object.option_overide_percent2; 
                     
-                    calculated_Press(i)= (stroke_object.i_touch_array_pressure)*(strokr_object.fuzzy_x(i)/10);
-                
+                     calculated_Y(i) = cell2mat(stroke_object.Y_1array(i))*stroke_object.option_overide_percent ...
+                    + cell2mat(stroke_object.i_touch_array_y(i)) * stroke_object.option_overide_percent2; 
+                     
+                     calculated_Press(i)= cell2mat(stroke_object.i_touch_array_pressure(i))* ...
+                     (cell2mat((stroke_object.fuzzy_pressure_array(i)))/10);
                 end
-                for i = 1:i_touch_array_x.length   
-                    current_str = strcat('pnt x',char('-----'), num2str(cell2mat( calculated_X(i))),char('-----'), 'y', ...
-                    char('-----'), num2str(cell2mat( calculated_Y1(i)),char('-----'),'time ',char('-----'), num2str(cell2mat(sroke_object.i_touch_time)),...
-                    char('-----'), 'prs',char('-----'), num2str(cell2mat(calculatedd_Press(i))),char('-----'), ...
-                    ' tlt   0.00   brg   0.00   whl   1.00   rot   0.00'));
-                    updatedString = regexprep(current_str, '-----', '      ');
+                for i = 2:length(cell2mat(stroke_object.i_touch_array_x))   
+                    current_str = '';
+                    current_str = strcat('pnt x',char('-----'), num2str(calculated_X(i)),char('-----'), 'y', ...
+                    char('-----'), num2str(calculated_Y(i)),char('-----'),'time ',char('-----'),...
+                    num2str(cell2mat(stroke_object.i_touch_time)),...
+                    char('-----'), 'prs',char('-----'), num2str(calculated_Press(i)),char('-----'), ...
+                    ' tlt   0.00   brg   0.00   whl   1.00   rot   0.00');
+                    %This is a bug I have to fix that requires extra memory
+                    n2dimension= size(current_str);
+                    updatedString = regexprep(current_str(2,1:n2dimension(2)), '-----', '      ');
                     calculated_brush(i)= cell({updatedString}); 
                 end
                     %Important closing is always important.
-                    calculated_brush(i_touch_array_x.length.length+1)=cell('stroke_end');
+                    calculated_brush(length(cell2mat(stroke_object.i_touch_array_x)))=cell({char('stroke_end')});
+                    calculated_brush(length(cell2mat(stroke_object.i_touch_array_x)))=cell({char('stroke_start')});
                     construct_brush.scriptCellArray_strokes = calculated_brush;
                     current_script = getScript(script_num);
                     construct_brush.scriptCellArray_brush = current_script;
                     
-               if (chng_val==0)
-                     result = cat(1,current_script,calculated_brush);
-                     construct_brush.scriptCellArray = result;
-            
-              
-               end
-           end  
+                  
+                    
+                    if (chng_val==3)
+                        result = cat(1,current_script,calculated_brush);
+                        construct_brush.scriptCellArray = result;
+
+                        construct_brush.opacity =BRUSH_opacity;
+                        construct_brush.brush_max= BRUSH_max;
+                        construct_brush.brush_min= BRUSH_min;
+                        construct_brush.changeValue= BRUSH_type;   
+                    end
+                end  
            
             
-            end
-           
-           
         end
-        
-        %the changeValue will ge called outside and then the objects 
-        %will go ino 
            
-        %pnt x  434.00 y  244.00 time 124282 prs 1.00 tlt 0.00 brg 0.00 whl 1.00 rot 0.00
-        %First one the Fuzzy logic inference to get values.  
-        %3, 6, 7, 8, 10, 12,13,15, 19, 20, 23, 27,29
-            %This activates all of the changes that will affect
+                    %the changeValue will ge called outside and then the objects 
+                    %will go ino 
+           
+                    %pnt x  434.00 y  244.00 time 124282 prs 1.00 tlt 0.00 brg 0.00 whl 1.00 rot 0.00
+                    %First one the Fuzzy logic inference to get values.  
+                    %3, 6, 7, 8, 10, 12,13,15, 19, 20, 23, 27,29
+                     %This activates all of the changes that will affect
                      %the brush based pn the brush selection sent to the
                      %constructor.
                      
@@ -111,7 +128,7 @@ classdef ScriptModIndividual
                      %especially as it gets more intricate. 
                  
         function obj = set.changeValue(obj,status)
-                obj.changeValue=status;
+               
                 switch status
                     case 0
                      %no action te value does not change
@@ -169,58 +186,67 @@ classdef ScriptModIndividual
                      %Replaces the value with another value
                      obj.set_gitter_opacity =1;  
                 end    
-                 result = cat(1,transfer_values.scriptCellArray_brush, calculated_brush);
+                 result = cat(1,obj.scriptCellArray_brush,  obj.scriptCellArray_strokes);
                  obj.scriptCellArray = result;
 
-            end
-        
+        end
+        function obj = set.scriptCellArray(obj,init)
+            obj.scriptCellArray= init;
+        end   
+        function obj = set.scriptCellArray_strokes(obj,init)
+            obj.scriptCellArray_strokes= init;
+        end   
+        function obj = set.scriptCellArray_brush(obj,init)
+            obj.scriptCellArray_brush = init;
+        end   
 %         set_stroke_opacity
 %         set_gitter_opacity
 %         set_image_textures 
         function obj = set.set_stroke_opacity(obj,init)
-                 obj.set_stroke_opacity=init;
+              
                  value1 = strcat('stroke_opacity', '-----',num2str(obj.opacity));
                  %This value will be modified within the object as it
                  %progresses.  
                  updatedString = regexprep(value1, '-----', '    ');
-                 obj.scriptCellArray_brush(obj.indexEffects(1)) = num2str(updatedString);      
+                 k = obj.indexEffects;
+                 obj.scriptCellArray_brush(k(1)) = mat2cell((updatedString),1);      
 
                  value1 = strcat('max_size_slider', '-----',num2str(obj.brush_max));
                  %This value will be modified within the object as it
                  %progresses.  
                  updatedString = regexprep(value1, '-----', '    ');
-                 obj.scriptCellArray_brush(obj.indexEffects(2)) = num2str(updatedString);  
+                 obj.scriptCellArray_brush(k(2)) = mat2cell((updatedString),1);;  
 
                  value1 = strcat('min_radius_fraction_slider', '-----',num2str(obj.brush_min));
                  %This value will be modified within the object as it
                  %progresses.  
                  updatedString = regexprep(value1, '-----', '    ');
-                 obj.scriptCellArray_brush(obj.indexEffects(3)) = num2str(updatedString);
+                 obj.scriptCellArray_brush(k(3)) = mat2cell((updatedString),1);
             end 
             function obj = set.set_gitter_opacity(obj,init)
-               obj.set_gitter_opacity=init;
-                obj.set_stroke_opacity=init;
+             
+               k = obj.indexEffects; 
                value1 = strcat('glazing_opacity_jitter', '-----',num2str(obj.opacity));
                  %This value will be modified within the object as it
                  %progresses.  
                  updatedString = regexprep(value1, '-----', '    ');
-                 obj.scriptCellArray_brush(obj.indexEffects(1)) = num2str(updatedString);      
+                 obj.scriptCellArray_brush(k(1)) = mat2cell((updatedString),1);;      
                  
                  value1 = strcat('max_size_slider', '-----',num2str(obj.brush_max));
                  %This value will be modified within the object as it
                  %progresses.  
                  updatedString = regexprep(value1, '-----', '    ');
-                 obj.scriptCellArray_brush(obj.indexEffects(2)) = num2str(updatedString);  
+                 obj.scriptCellArray_brush(k(2)) = mat2cell((updatedString),1);;  
                  
                  value1 = strcat('min_radius_fraction_slider', '-----',num2str(obj.brush_min));
                  %This value will be modified within the object as it
                  %progresses.  
                  updatedString = regexprep(value1, '-----', '    ');
-                 obj.scriptCellArray_brush(obj.indexEffects(3)) = num2str(updatedString);
+                 obj.scriptCellArray_brush(k(3)) = mat2cell((updatedString),1);
                
             end 
             function obj = set.set_image_textures (obj,init)
-                    obj.set_image_textures =init;
+                    %obj.set_image_textures =init;
             end 
         
     end

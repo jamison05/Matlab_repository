@@ -21,6 +21,10 @@ for i = 1: size(short_test_listarray)
     total_scripts = vertcat(total_scripts, result);
 end 
 
+
+fileID = fopen('script_iteration1.txt','w');
+formatSpec = '%s';
+
 T = cell2table(total_scripts, 'VariableNames',{'var1'});
 input_str = input(prompt,'s');
 file_table= strcat(input_str,'_table.txt');
