@@ -139,9 +139,9 @@ classdef stroke_Program1
                 temp_fuzzyfeed1 = cell2mat(stroke_constructor.i_touch_time(i))/max_time;
                 temp_fuzzyfeed2 = cell2mat(stroke_constructor.i_touch_time(i))/max_time;
                
-            fuzzy_data = evalfis([temp_fuzzyfeed1, temp_fuzzyfeed2],cjlvl1);     
+            fuzzy_data = mat2cell(evalfis([.233, temp_fuzzyfeed2(i)],cjlvl1));     
             
-           stroke_constructor.fuzzy_pressure_array(i)= mat2cell(fuzzy_data,1);
+           stroke_constructor.fuzzy_pressure_array= fuzzy_data(1);
            end 
              
             
